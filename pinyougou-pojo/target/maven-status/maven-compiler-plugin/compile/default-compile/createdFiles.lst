@@ -96,6 +96,7 @@ com\pinyougou\pojo\TbOrderItemExample$Criterion.class
 com\pinyougou\pojo\TbProvincesExample$GeneratedCriteria.class
 com\pinyougou\pojo\TbOrderItemExample.class
 com\pinyougou\pojo\TbItem.class
+pojogroup\Specification.class
 com\pinyougou\pojo\TbAreasExample$GeneratedCriteria.class
 com\pinyougou\pojo\TbOrderItem.class
 com\pinyougou\pojo\TbContentExample$Criteria.class
