@@ -84,5 +84,26 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 				}
 		);
 	}
+	//根据面包屑   定义查询等级
+	$scope.grade=1;//默认为1
+	$scope.setGrade=function(value) {
+		$scope.grade=value;
+	}
+	//根据等级  给面包屑绑定的变量赋值 并读取列表
+	$scope.selectList=function(entity) {
+		if($scope.grade==1){//如果为 1 级
+			$scope.entity_1=null;
+			$scope.entity_2=null;
+		}
+		if($scope.grade==2){//如果为 2 级
+			$scope.entity_1=entity;
+			$scope.entity_2=null;
+		}
+		if($scope.grade==3){//如果为 3 级
+			$scope.entity_2=entity;
+		}
+		$scope.findByParentId(entity.id);//调用查询下级列表
+	}
+	
     
 });	
