@@ -112,7 +112,7 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 	$scope.findTemplateList=function(){
 		typeTemplateService.selectOptionList().success(
 				function(response){
-					alert(response);
+					
 					$scope.typeTemplateList={data:response};
 				}
 		);
