@@ -11,18 +11,26 @@
     <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="../css/style.css">
-	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    	
+    <link rel="stylesheet" href="../plugins/select2/select2.css" ></script>
+    <link rel="stylesheet" href="../plugins/select2/select2-bootstrap.css" ></script>
+    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../plugins/select2/select2.min.js" type="text/javascript"></script>
+    
+	
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
     
     <script type="text/javascript" src="../plugins/angularjs/angular.min.js"> </script>
 	<script type="text/javascript" src="../js/base.js"> </script>
+	<script src="../js/angular-select2.js"></script>
 	<script type="text/javascript" src="../js/service/itemCatService.js"> </script>
+	<script type="text/javascript" src="../js/service/typeTemplateService.js"> </script>
 	<script type="text/javascript" src="../js/controller/baseController.js"> </script>
 	<script type="text/javascript" src="../js/controller/itemCatController.js"></script>
     
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="itemCatController" ng-init="findByParentId(0)">
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="itemCatController" ng-init="findByParentId(0);findTemplateList()">
   <!-- .box-body -->
                 
                     <div class="box-header with-border">
@@ -118,24 +126,24 @@
 				<tr>
 		      		<td>上级商品分类</td>
 		      		<td>
-		      		   珠宝 >>  银饰
+		      		   顶级目录>{{entity_1.name}}>  {{entity_2.name}}
 		      		</td>
 		      	</tr>
 		      	<tr>
 		      		<td>商品分类名称</td>
-		      		<td><input  class="form-control" placeholder="商品分类名称">  </td>
+		      		<td><input  class="form-control" placeholder="商品分类名称" ng-model="entity.name">  </td>
 		      	</tr>			  
 		      	<tr>
 		      		<td>类型模板</td>
 		      		<td>	      		
-		      			<input select2 config="options['type_template']" placeholder="商品类型模板" class="form-control" type="text"/>
+		      			<input select2 config="typeTemplateList" ng-model="entity.typeId" placeholder="商品类型模板" class="form-control" type="text"/>
 		      		</td>		      		      		
 		      	</tr>		      	
 			 </table>				
 			
 		</div>
 		<div class="modal-footer">						
-			<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">保存</button>
+			<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save(entity)">保存</button>
 			<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 		</div>
 	  </div>

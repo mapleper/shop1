@@ -1,5 +1,5 @@
  //控制层 
-app.controller('itemCatController' ,function($scope,$controller   ,itemCatService){	
+app.controller('itemCatController' ,function($scope,$controller   ,itemCatService,typeTemplateService){	
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -37,13 +37,14 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=itemCatService.update( $scope.entity ); //修改  
 		}else{
+			$scope.entity.parentId=$scope.parentId;//赋予上级 ID
 			serviceObject=itemCatService.add( $scope.entity  );//增加 
 		}				
 		serviceObject.success(
 			function(response){
 				if(response.success){
-					//重新查询 
-		        	$scope.reloadList();//重新加载
+					//重新查询
+					$scope.findByParentId($scope.parentId);//重新加载
 				}else{
 					alert(response.message);
 				}
@@ -78,6 +79,8 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 	}
 	//根据上级ID查询列表
 	$scope.findByParentId=function(parentId){
+		//定义一个变量用于存贮上级id，用于新建分类时添加用
+		$scope.parentId=parentId;
 		itemCatService.findByParentId(parentId).success(
 				function(response){
 					$scope.list=response;
@@ -104,6 +107,17 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 		}
 		$scope.findByParentId(entity.id);//调用查询下级列表
 	}
+	//模板列表
+	$scope.typeTemplateList={data:[]};
+	$scope.findTemplateList=function(){
+		typeTemplateService.selectOptionList().success(
+				function(response){
+					alert(response);
+					$scope.typeTemplateList={data:response};
+				}
+		);
+	}
+
 	
     
 });	
