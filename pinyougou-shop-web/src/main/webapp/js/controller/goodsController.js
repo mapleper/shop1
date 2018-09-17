@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService,uploadService){	
+app.controller('goodsController' ,function($scope,$controller   ,goodsService,uploadService,itemCatService){	
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -95,6 +95,13 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 	//列表中移除图片
 	 $scope.remove_image_entity=function(index){
 		 $scope.entity.goodsDesc.itemImages.splice(index,1);
+	 }
+	 
+	 //读取一级分类下拉框
+	 $scope.selectItemCat1List=function() {
+		 itemCatService.findByParentId(0).success(function(response) {
+			 $scope.itemCat1List=response;
+		 });
 	 }
 	
 	
