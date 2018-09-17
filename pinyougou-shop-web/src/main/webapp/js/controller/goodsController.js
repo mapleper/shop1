@@ -124,7 +124,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 			 $scope.entity.goods.typeTemplateId=response.typeId; //更新模板 ID
 		 }); 
 	 });
-	 //根据模板ID显示品牌列表  以及扩展属性
+	 //根据模板ID显示品牌列表  以及扩展属性   规格列表
 	 $scope.$watch('entity.goods.typeTemplateId',function(newValue,oldValue) {
 		 typeTemplateService.findOne(newValue).success(function(response) {
 			 $scope.typeTemplate=response;
@@ -133,6 +133,12 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 			 //读取模板中的扩展属性给商品的扩展属性赋值
 			 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
 		 });
+		 
+		 typeTemplateService.findSpecList(newValue).success(function(response) {
+			 $scope.specList=response;
+		 });
+		 
+		 
 	 });
 	 
 	
