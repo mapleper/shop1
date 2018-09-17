@@ -103,6 +103,28 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 			 $scope.itemCat1List=response;
 		 });
 	 }
+	 //读取二级分类  用到了监听变量变化
+	 $scope.$watch('entity.goods.category1Id',function(newValue,oldValue) {
+		 //根据一级分类id的变化，查询出二级分类
+		 itemCatService.findByParentId(newValue).success(function(response) {
+			 $scope.itemCat2List=response;
+		 }); 
+	 });
+	 //读取三级下拉列表
+	 $scope.$watch('entity.goods.category2Id',function(newValue,oldValue) {
+		 //根据一级分类id的变化，查询出二级分类
+		 itemCatService.findByParentId(newValue).success(function(response) {
+			 $scope.itemCat3List=response;
+		 }); 
+	 });
+	 //读取模板ID
+	 $scope.$watch('entity.goods.category3Id',function(newValue,oldValue) {
+		 //根据一级分类id的变化，查询出二级分类
+		 itemCatService.findOne(newValue).success(function(response) {
+			 $scope.entity.goods.typeTemplateId=response.typeId; //更新模板 ID
+		 }); 
+	 });
+	 
 	
 	
     
