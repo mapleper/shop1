@@ -190,6 +190,34 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 		 }
 	 }
 	 
+	 //创建SKU列表  etity.itemList
+	 $scope.createItemList=function() {
+		 //先将itemList初始化   每次点击都是从这个初始值重新构建
+		 $scope.entity.itemList=[{spec:{},price:0,num:99999,status:'0',isDefault:'0' }];
+		 var items= $scope.entity.goodsDesc.specificationItems;
+		 //循环通过选择得到的specificationItems
+		 for(var i=0;i<items.length;i++) {
+			 $scope.entity.itemList=addColumn( $scope.entity.itemList,items[i].attributeName,items[i].attributeValue );
+		 }
+		 
+		 
+	 }
+	 
+	 //定义一个方法 用于itemList数据行列的添加   list--就是entity.itemList
+	 addColumn=function(list,columnName,columnValues) {
+		 var newList=[];//定义一个新的集合  
+		 for(var i=0;i<list.length;i++) {
+			 var oldRow=list[i];
+			 for(var j=0;j<columnValues.length;j++) {
+				 var newRow=JSON.parse(JSON.stringify( oldRow ));
+				 newRow.spec[columnName]=columnValues[j];
+				 newList.push(newRow);
+			 }
+		 }
+		 
+		 return newList;
+	 }
+	 
 	 
 	 
 	 
