@@ -106,23 +106,41 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 	 //读取二级分类  用到了监听变量变化
 	 $scope.$watch('entity.goods.category1Id',function(newValue,oldValue) {
 		 //根据一级分类id的变化，查询出二级分类
-		 itemCatService.findByParentId(newValue).success(function(response) {
-			 $scope.itemCat2List=response;
-		 }); 
+		 //如果之前已选择 但前面分类再次改变  需要更新后面级别选项框
+		 if(oldValue!=undefined) {
+			 $scope.entity.goods.category2Id=-1;
+			 //优化模板ID的回显  根据一级分类的选择而清空原来的模板ID
+			 $scope.entity.goods.typeTemplateId=null;
+		 }
+		 //因为刚刷新页面 会触发访问一次   会避免前台异常 去掉newValue为null的情况  
+		
+		 if(newValue!=undefined) {
+			 itemCatService.findByParentId(newValue).success(function(response) {
+				 $scope.itemCat2List=response;
+			 });
+		 }
+		 
 	 });
 	 //读取三级下拉列表
 	 $scope.$watch('entity.goods.category2Id',function(newValue,oldValue) {
 		 //根据一级分类id的变化，查询出二级分类
-		 itemCatService.findByParentId(newValue).success(function(response) {
-			 $scope.itemCat3List=response;
-		 }); 
+		 if(newValue!=undefined) {
+			 itemCatService.findByParentId(newValue).success(function(response) {
+				 $scope.itemCat3List=response;
+			 }); 
+		 }
+		 
 	 });
 	 //读取模板ID
 	 $scope.$watch('entity.goods.category3Id',function(newValue,oldValue) {
 		 //根据一级分类id的变化，查询出二级分类
-		 itemCatService.findOne(newValue).success(function(response) {
-			 $scope.entity.goods.typeTemplateId=response.typeId; //更新模板 ID
-		 }); 
+		
+		 if(newValue!=undefined) {
+			 itemCatService.findOne(newValue).success(function(response) {
+				 $scope.entity.goods.typeTemplateId=response.typeId; //更新模板 ID
+			 });
+		 }
+		  
 	 });
 	 //根据模板ID显示品牌列表  以及扩展属性   规格列表
 	 $scope.$watch('entity.goods.typeTemplateId',function(newValue,oldValue) {
