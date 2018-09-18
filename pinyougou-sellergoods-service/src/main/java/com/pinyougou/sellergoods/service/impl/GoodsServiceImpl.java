@@ -76,49 +76,67 @@ public class GoodsServiceImpl implements GoodsService {
 		goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());//设置 ID
 		goodsDescMapper.insert(goods.getGoodsDesc());//插入商品扩展数据	
 		
-		for(TbItem item:goods.getItemList()) {
-			//添加SKU数据至tb_item表中
-			//设置标题
-			String title=goods.getGoods().getGoodsName();//商品名称
-			Map<String, Object> specMap = JSON.parseObject(item.getSpec());
-			for(String key:specMap.keySet()) {
-				title+=""+specMap.get(key);
+		//是否使用规格
+		if("1".equals(goods.getGoods().getIsEnableSpec())) {
+			for(TbItem item:goods.getItemList()) {
+				//添加SKU数据至tb_item表中
+				//设置标题
+				String title=goods.getGoods().getGoodsName();//商品名称
+				Map<String, Object> specMap = JSON.parseObject(item.getSpec());
+				for(String key:specMap.keySet()) {
+					title+=""+specMap.get(key);
+				}
+				item.setTitle(title);
+				
+				
+				setItemValues(goods, item);
+				itemMapper.insert(item);
+		
+				
 			}
-			item.setTitle(title);
-			
-			item.setGoodsId(goods.getGoods().getId());//商品 SPU 编号
-			item.setSellerId(goods.getGoods().getSellerId());//商家编号
-			item.setCategoryid(goods.getGoods().getCategory3Id());//商品分类编号（3 级）
-			item.setCreateTime(new Date());//创建日期
-			item.setUpdateTime(new Date());//修改日期
-			
-			//品牌名称
-			TbBrand brand = brandMapper.selectByPrimaryKey(goods.getGoods().getBrandId());
-			item.setBrand(brand.getName());
-			
-			//分类名称
-			TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(goods.getGoods().getCategory3Id());
-			item.setCategory(itemCat.getName());
-			
-			//商家名称
-			TbSeller seller = sellerMapper.selectByPrimaryKey(goods.getGoods().getSellerId());
-			item.setSeller(seller.getNickName());
-			
-			//图片地址
-			String itemImages = goods.getGoodsDesc().getItemImages();
-			List<Map> imageList = JSON.parseArray(itemImages,Map.class);
-			
-			if(imageList.size()>0) {
-				item.setImage((String)imageList.get(0).get("url"));
-			}
-			
+		}else {
+			//若未启用规格  则只有一条sku记录
+			TbItem item=new TbItem();
+			item.setTitle(goods.getGoods().getGoodsName());
+			item.setPrice( goods.getGoods().getPrice() );//价格
+			item.setStatus("1");//状态
+			item.setIsDefault("1");//是否默认
+			item.setNum(99999);//库存数量
+			item.setSpec("{}");
+			setItemValues(goods,item);
 			itemMapper.insert(item);
-			
-			
-			
-			
-			
-			
+		}
+		
+		
+	}
+	/**
+	 * 定义一个私有方法  用于添加商品时  封装SKU   item的属性
+	 */
+	private void setItemValues(Goods goods,TbItem item) {
+		item.setGoodsId(goods.getGoods().getId());//商品 SPU 编号
+		item.setSellerId(goods.getGoods().getSellerId());//商家编号
+		item.setCategoryid(goods.getGoods().getCategory3Id());//商品分类编号（3 级）
+		item.setCreateTime(new Date());//创建日期
+		item.setUpdateTime(new Date());//修改日期
+		
+		//品牌名称
+		TbBrand brand = brandMapper.selectByPrimaryKey(goods.getGoods().getBrandId());
+		item.setBrand(brand.getName());
+		
+		//分类名称
+		TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(goods.getGoods().getCategory3Id());
+		item.setCategory(itemCat.getName());
+		
+		//商家名称
+		TbSeller seller = sellerMapper.selectByPrimaryKey(goods.getGoods().getSellerId());
+		item.setSeller(seller.getNickName());
+		
+		//图片地址
+		String itemImages = goods.getGoodsDesc().getItemImages();
+		List<Map> imageList = JSON.parseArray(itemImages,Map.class);
+		
+		if(imageList.size()>0) {
+			item.setImage((String)imageList.get(0).get("url"));
 		}
 	}
 
