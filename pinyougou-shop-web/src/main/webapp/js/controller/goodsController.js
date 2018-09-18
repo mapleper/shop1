@@ -86,7 +86,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 		});
 	}
 	//商品图片
-	$scope.entity={goods:{},goodsDesc:{itemImages:[]}};//定义页面实体结构
+	$scope.entity={goods:{},goodsDesc:{itemImages:[],specificationItems:[]}};//定义页面实体结构
 	//添加图片列表
 	 $scope.add_image_entity=function(){
 		 $scope.entity.goodsDesc.itemImages.push($scope.image_entity);
@@ -153,7 +153,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 				 //读取模板中的扩展属性给商品的扩展属性赋值
 				 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
 			 });
-			 
+			 //查询规格列表
 			 typeTemplateService.findSpecList(newValue).success(function(response) {
 				 $scope.specList=response;
 			 });
@@ -162,6 +162,36 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 		 
 		 
 	 });
+	 
+	 //$scope.entity={goods:{},goodsDesc:{itemImages:[],specificationItems:[]}};//定义页面实体结构
+	 //上面已经初始化商品组合实体类   specificationItems:[]已经有初始值
+	 
+	 $scope.updateSpecAttribute=function($event,name,value) {
+		 var object=$scope.searchObjectByKey($scope.entity.goodsDesc.specificationItems,
+				 'attributeName',name);
+		 
+		 if(object!=null) {
+			//已经有这种规格名称
+			 if($event.target.checked) {
+				 //被选上
+				 object.attributeValue.push(value);
+			 }else{
+				 //取消勾选,移除该数据
+				 object.attributeValue.splice( object.attributeValue.indexOf(value ) ,1);
+				 if(object.attributeValue.length==0) {
+					 //若该名称规格已没有被选上的值
+					 $scope.entity.goodsDesc.specificationItems.splice(
+					$scope.entity.goodsDesc.specificationItems.indexOf(object),1);
+				 }
+			 }
+			 
+		 }else{
+			 $scope.entity.goodsDesc.specificationItems.push({"attributeName":name,"attributeValue":[value]});
+		 }
+	 }
+	 
+	 
+	 
 	 
 	
 	
