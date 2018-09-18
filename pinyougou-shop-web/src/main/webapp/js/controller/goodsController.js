@@ -144,17 +144,21 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,up
 	 });
 	 //根据模板ID显示品牌列表  以及扩展属性   规格列表
 	 $scope.$watch('entity.goods.typeTemplateId',function(newValue,oldValue) {
-		 typeTemplateService.findOne(newValue).success(function(response) {
-			 $scope.typeTemplate=response;
-			 //将字符串形式传化成JSON对象  以在前台获取出数据
-			 $scope.typeTemplate.brandIds=JSON.parse($scope.typeTemplate.brandIds);
-			 //读取模板中的扩展属性给商品的扩展属性赋值
-			 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
-		 });
 		 
-		 typeTemplateService.findSpecList(newValue).success(function(response) {
-			 $scope.specList=response;
-		 });
+		 if(newValue!=undefined&&newValue!=null) {
+			 typeTemplateService.findOne(newValue).success(function(response) {
+				 $scope.typeTemplate=response;
+				 //将字符串形式传化成JSON对象  以在前台获取出数据
+				 $scope.typeTemplate.brandIds=JSON.parse($scope.typeTemplate.brandIds);
+				 //读取模板中的扩展属性给商品的扩展属性赋值
+				 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
+			 });
+			 
+			 typeTemplateService.findSpecList(newValue).success(function(response) {
+				 $scope.specList=response;
+			 });
+		 }
+		 
 		 
 		 
 	 });
