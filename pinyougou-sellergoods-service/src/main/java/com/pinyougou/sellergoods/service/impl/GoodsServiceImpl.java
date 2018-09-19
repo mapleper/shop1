@@ -77,37 +77,8 @@ public class GoodsServiceImpl implements GoodsService {
 		goodsMapper.insert(goods.getGoods());
 		goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());//设置 ID
 		goodsDescMapper.insert(goods.getGoodsDesc());//插入商品扩展数据	
+		saveItemList(goods);//插入sku列表
 		
-		//是否使用规格
-		if("1".equals(goods.getGoods().getIsEnableSpec())) {
-			for(TbItem item:goods.getItemList()) {
-				//添加SKU数据至tb_item表中
-				//设置标题
-				String title=goods.getGoods().getGoodsName();//商品名称
-				Map<String, Object> specMap = JSON.parseObject(item.getSpec());
-				for(String key:specMap.keySet()) {
-					title+=""+specMap.get(key);
-				}
-				item.setTitle(title);
-				
-				
-				setItemValues(goods, item);
-				itemMapper.insert(item);
-		
-				
-			}
-		}else {
-			//若未启用规格  则只有一条sku记录
-			TbItem item=new TbItem();
-			item.setTitle(goods.getGoods().getGoodsName());
-			item.setPrice( goods.getGoods().getPrice() );//价格
-			item.setStatus("1");//状态
-			item.setIsDefault("1");//是否默认
-			item.setNum(99999);//库存数量
-			item.setSpec("{}");
-			setItemValues(goods,item);
-			itemMapper.insert(item);
-		}
 		
 		
 	}
@@ -141,14 +112,60 @@ public class GoodsServiceImpl implements GoodsService {
 			item.setImage((String)imageList.get(0).get("url"));
 		}
 	}
+	//定义一个私有方法  用于插入SKU列表
+	private void saveItemList(Goods goods) {
+		//是否使用规格
+				if("1".equals(goods.getGoods().getIsEnableSpec())) {
+					for(TbItem item:goods.getItemList()) {
+						//添加SKU数据至tb_item表中
+						//设置标题
+						String title=goods.getGoods().getGoodsName();//商品名称
+						Map<String, Object> specMap = JSON.parseObject(item.getSpec());
+						for(String key:specMap.keySet()) {
+							title+=""+specMap.get(key);
+						}
+						item.setTitle(title);
+						
+						
+						setItemValues(goods, item);
+						itemMapper.insert(item);
+				
+						
+					}
+				}else {
+					//若未启用规格  则只有一条sku记录
+					TbItem item=new TbItem();
+					item.setTitle(goods.getGoods().getGoodsName());
+					item.setPrice( goods.getGoods().getPrice() );//价格
+					item.setStatus("1");//状态
+					item.setIsDefault("1");//是否默认
+					item.setNum(99999);//库存数量
+					item.setSpec("{}");
+					setItemValues(goods,item);
+					itemMapper.insert(item);
+				}
+	}
 
 	
 	/**
 	 * 修改
 	 */
 	@Override
-	public void update(TbGoods goods){
-		goodsMapper.updateByPrimaryKey(goods);
+	public void update(Goods goods){
+		//修改后商品  商品审核状态需重新设置
+		goods.getGoods().setAuditStatus("0");//将商品状态设置为未审核状态
+		
+		goodsMapper.updateByPrimaryKey(goods.getGoods());
+		goodsDescMapper.updateByPrimaryKey(goods.getGoodsDesc());
+		
+		//先删除原有sku列表  再添加
+		TbItemExample itemExample = new TbItemExample();
+		com.pinyougou.pojo.TbItemExample.Criteria criteria = itemExample.createCriteria();
+		criteria.andGoodsIdEqualTo(goods.getGoods().getId());
+		itemMapper.deleteByExample(itemExample);
+		
+		//添加SKU列表  封装成一个方法
+		saveItemList(goods);
 	}	
 	
 	/**

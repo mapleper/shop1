@@ -66,9 +66,16 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 	}
 	
 	//保存 
-	$scope.add=function(){				
-		$scope.entity.goodsDesc.introduction=editor.html();				
-		goodsService.add($scope.entity).success(
+	$scope.save=function(){				
+		$scope.entity.goodsDesc.introduction=editor.html();	
+		
+		var serviceObject;
+		if($scope.entity.goods.id!=null){//如果有 ID
+			serviceObject=goodsService.update( $scope.entity ); //修改
+		}else{
+			serviceObject=goodsService.add( $scope.entity );//增加
+			}
+		serviceObject.success(
 			function(response){
 				if(response.success){
 					alert("保存成功");
