@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService){	
+app.controller('goodsController' ,function($scope,$controller   ,goodsService,itemCatService){	
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -7,6 +7,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 	$scope.findAll=function(){
 		goodsService.findAll().success(
 			function(response){
+				
 				$scope.list=response;
 			}			
 		);
@@ -76,5 +77,20 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 			}			
 		);
 	}
+	//商品状态  用于前台商品列表展示
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+	
+	//查询商品分类
+	 //提供一个分类名称数组  并初始化  方便前台获取数据
+	 $scope.itemCatList=[];
+	 $scope.findItemCatList=function() {
+		 itemCatService.findAll().success(function(response) {
+			 for(var i=0;i<response.length;i++) {
+				 $scope.itemCatList[response[i].id]=response[i].name;
+			 }
+		 });
+	 }
+	
+	
     
 });	
