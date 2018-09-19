@@ -79,8 +79,9 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 			function(response){
 				if(response.success){
 					alert("保存成功");
-					$scope.entity={};
-					editor.html('');//清空富文本编辑器
+					//$scope.entity={};
+					//editor.html('');//清空富文本编辑器
+					location.href="goods.html";//跳转到商品列表页
 				}else{
 					alert(response.message);
 				}
