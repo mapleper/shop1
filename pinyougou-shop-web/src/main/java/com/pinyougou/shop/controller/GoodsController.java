@@ -113,6 +113,11 @@ public class GoodsController {
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
+		//获取执行此操作的 商家ID   因为某个商家查询时我们只显示属于该商家的商品
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		//将sellerId添加到查询条件
+		goods.setSellerId(sellerId);		
+		
 		return goodsService.findPage(goods, page, rows);		
 	}
 	
