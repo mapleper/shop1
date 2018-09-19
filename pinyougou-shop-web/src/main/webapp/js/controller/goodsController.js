@@ -37,8 +37,28 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 				$scope.entity.goodsDesc.itemImages=JSON.parse($scope.entity.goodsDesc.itemImages);
 				//扩展属性回显    在这里转换后要注意前面  我们在级联分类列表查询时  扩展属性会  监听模板ID值去查询一次  会将这里得到的值覆盖  我们需要去处理
 				$scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.entity.goodsDesc.customAttributeItems);
+				//规格名称及选项回显  除此要想规格选项的选择情况 是否被勾选回显  还需要判断  单独定义方法判断
+				$scope.entity.goodsDesc.specificationItems=JSON.parse($scope.entity.goodsDesc.specificationItems);
 			}
 		);				
+	}
+	//根据findOne得到的商品信息中的规格信息   查询哪些需要被勾选回显
+	$scope.checkAttributeValue=function(specName,optionName) {
+		var items= $scope.entity.goodsDesc.specificationItems;
+		//利用之前封装的方法
+		var object= $scope.searchObjectByKey(items,'attributeName',specName);
+		if(object==null) {
+			//若不存在此规格名称
+			return false;
+		}else{
+			if(object.attributeValue.indexOf(optionName)>=0) {
+				//存在此规格名称对应的规格选项
+				return true;
+			}else{
+				//无此规格选项
+				return false;
+			}
+		}
 	}
 	
 	//保存 
@@ -169,7 +189,7 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 			 });
 			 //查询规格列表
 			 typeTemplateService.findSpecList(newValue).success(function(response) {
-				 $scope.specList=response;
+				 $scope.specList=response;	
 			 });
 		 }
 		 
