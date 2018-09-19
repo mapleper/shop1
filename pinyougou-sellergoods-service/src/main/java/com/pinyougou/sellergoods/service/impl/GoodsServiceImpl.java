@@ -22,6 +22,7 @@ import com.pinyougou.pojo.TbGoodsExample;
 import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbItemCat;
+import com.pinyougou.pojo.TbItemExample;
 import com.pinyougou.pojo.TbSeller;
 import com.pinyougou.sellergoods.service.GoodsService;
 
@@ -164,6 +165,13 @@ public class GoodsServiceImpl implements GoodsService {
 		
 		TbGoodsDesc tbGoodsDesc = goodsDescMapper.selectByPrimaryKey(id);
 		goods.setGoodsDesc(tbGoodsDesc);
+		
+		//查询SKU数据
+		TbItemExample example = new TbItemExample();
+		com.pinyougou.pojo.TbItemExample.Criteria criteria = example.createCriteria();
+		criteria.andGoodsIdEqualTo(id);
+		List<TbItem> list = itemMapper.selectByExample(example);
+		goods.setItemList(list);
 		return goods;
 		
 		

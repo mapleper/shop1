@@ -39,6 +39,10 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 				$scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.entity.goodsDesc.customAttributeItems);
 				//规格名称及选项回显  除此要想规格选项的选择情况 是否被勾选回显  还需要判断  单独定义方法判断
 				$scope.entity.goodsDesc.specificationItems=JSON.parse($scope.entity.goodsDesc.specificationItems);
+				//SKU列表转换
+				for(var i=0;i<$scope.entity.itemList.length;i++) {
+					$scope.entity.itemList[i].spec=JSON.parse($scope.entity.itemList[i].spec);
+				}
 			}
 		);				
 	}
@@ -189,6 +193,7 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 			 });
 			 //查询规格列表
 			 typeTemplateService.findSpecList(newValue).success(function(response) {
+				 //改变后端代码  查模板表时  得到规格名称时   再去查规格选项表一起把规格选项查出来
 				 $scope.specList=response;	
 			 });
 		 }
