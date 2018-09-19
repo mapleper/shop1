@@ -17,6 +17,7 @@ import com.pinyougou.mapper.TbItemMapper;
 import com.pinyougou.mapper.TbSellerMapper;
 import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbGoodsDesc;
 import com.pinyougou.pojo.TbGoodsExample;
 import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.pojo.TbItem;
@@ -155,8 +156,18 @@ public class GoodsServiceImpl implements GoodsService {
 	 * @return
 	 */
 	@Override
-	public TbGoods findOne(Long id){
-		return goodsMapper.selectByPrimaryKey(id);
+	public Goods findOne(Long id){
+		
+		Goods goods=new Goods();
+		TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+		goods.setGoods(tbGoods);
+		
+		TbGoodsDesc tbGoodsDesc = goodsDescMapper.selectByPrimaryKey(id);
+		goods.setGoodsDesc(tbGoodsDesc);
+		return goods;
+		
+		
+		
 	}
 
 	/**
