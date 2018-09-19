@@ -22,7 +22,7 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 		);
 	}
 	
-	//查询实体 
+	//查询实体    修改商品信息回显
 	$scope.findOne=function(){
 		var id=$location.search()['id'];//获取页面传来的id
 		if(id==null) {
@@ -30,7 +30,10 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 		}
 		goodsService.findOne(id).success(
 			function(response){
-				$scope.entity= response;					
+				$scope.entity= response;
+				//富文本信息回显
+				editor.html($scope.entity.goodsDesc.introduction);
+			
 			}
 		);				
 	}
