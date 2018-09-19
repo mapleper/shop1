@@ -35,7 +35,8 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 				editor.html($scope.entity.goodsDesc.introduction);
 				//转换图片数据格式  回显图片内容
 				$scope.entity.goodsDesc.itemImages=JSON.parse($scope.entity.goodsDesc.itemImages);
-			
+				//扩展属性回显    在这里转换后要注意前面  我们在级联分类列表查询时  扩展属性会  监听模板ID值去查询一次  会将这里得到的值覆盖  我们需要去处理
+				$scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.entity.goodsDesc.customAttributeItems);
 			}
 		);				
 	}
@@ -160,7 +161,11 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 				 //将字符串形式传化成JSON对象  以在前台获取出数据
 				 $scope.typeTemplate.brandIds=JSON.parse($scope.typeTemplate.brandIds);
 				 //读取模板中的扩展属性给商品的扩展属性赋值
-				 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
+				 if($location.search()['id']==null) {
+					 //前面页面没有传入商品id  则不是回显  进行下面操作
+					 $scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.typeTemplate.customAttributeItems);
+				 }
+				 
 			 });
 			 //查询规格列表
 			 typeTemplateService.findSpecList(newValue).success(function(response) {
