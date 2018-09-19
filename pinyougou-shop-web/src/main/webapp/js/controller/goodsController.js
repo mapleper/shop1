@@ -33,6 +33,8 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 				$scope.entity= response;
 				//富文本信息回显
 				editor.html($scope.entity.goodsDesc.introduction);
+				//转换图片数据格式  回显图片内容
+				$scope.entity.goodsDesc.itemImages=JSON.parse($scope.entity.goodsDesc.itemImages);
 			
 			}
 		);				
