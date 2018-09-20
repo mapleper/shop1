@@ -80,7 +80,7 @@
                              <td>{{entity.title}}</td>			
                              <td>{{entity.url}}</td>			
                              <td><img alt="" src="{{entity.pic}}" height="50px" width="100px"></td>			
-                             <td>{{entity.status}}</td>			
+                             <td>{{status[entity.status]}}</td>			
                              <td>{{entity.sortOrder}}</td>			
 		                                 
 		                                  <td class="text-center">                                           
@@ -145,7 +145,7 @@
                              
 <td>状态</td>
 
-                             <td><input  class="form-control" ng-model="entity.status" placeholder="状态" ></td>
+                             <td><input type="checkbox"   ng-model="entity.status" ng-true-value="1" ng-false-value="0"></td>
 
                         </tr>		
 		      	<tr>

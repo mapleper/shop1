@@ -97,5 +97,7 @@ app.controller('contentController' ,function($scope,$controller   ,contentServic
 			$scope.contentCategoryList=response;
 		});
 	}
+	//定义一个status数组  用于前台展示数据
+	$scope.status=['无效','有效'];
     
 });	
