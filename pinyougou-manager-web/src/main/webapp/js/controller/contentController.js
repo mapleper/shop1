@@ -1,5 +1,5 @@
  //控制层 
-app.controller('contentController' ,function($scope,$controller   ,contentService){	
+app.controller('contentController' ,function($scope,$controller   ,contentService,uploadService){	
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -75,6 +75,21 @@ app.controller('contentController' ,function($scope,$controller   ,contentServic
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
 		);
+	}
+	//文件上传
+	$scope.uploadFile=function() {
+		uploadService.uploadFile().success(function(response) {
+			if(response.success) {
+				$scope.entity.pic=response.message;//设置文件地址
+
+			}else{
+				alert(response.message);
+			}
+			
+			
+		}).error(function() {
+			alert("上传出错");
+		});
 	}
     
 });	
