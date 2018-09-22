@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
+import org.springframework.data.solr.core.mapping.Dynamic;
 
 public class TbItem implements Serializable{
 	
@@ -63,8 +64,8 @@ public class TbItem implements Serializable{
     @Field("item_seller")
     private String seller;
     
-    //@Dynamic
-    //@Field("item_spec_*")
+    @Dynamic
+    @Field("item_spec_*")
     private Map<String,String> specMap;
     
     public Map<String, String> getSpecMap() {
