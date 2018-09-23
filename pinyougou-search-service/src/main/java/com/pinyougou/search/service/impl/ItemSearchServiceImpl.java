@@ -28,6 +28,21 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 	@Override
 	public Map<String, Object> search(Map searchMap) {
 		Map<String, Object> map =new HashMap<>();
+		//添加查询条件
+		
+		/*Query query=new SimpleQuery("*:*");
+		
+		Criteria criteria=new Criteria("item_keywords").is(searchMap.get("keywords"));
+		query.addCriteria(criteria);
+		ScoredPage<TbItem> page = solrTemplate.queryForPage(query, TbItem.class);*/
+		
+		map.putAll(searchList(searchMap));
+		return map;	
+	}
+	//查询列表
+	private Map  searchList(Map searchMap) {
+		Map map=new HashMap<>();
+		
 		//设置高亮选项
 		HighlightQuery query=new SimpleHighlightQuery();
 		//设置高亮的域
@@ -57,21 +72,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 				item.setTitle(highlightEntry.getHighlights().get(0).getSnipplets().get(0));
 			}
 		}
-		
-		
-		
-		//添加查询条件
-		
-		/*Query query=new SimpleQuery("*:*");
-		
-		Criteria criteria=new Criteria("item_keywords").is(searchMap.get("keywords"));
-		query.addCriteria(criteria);
-		ScoredPage<TbItem> page = solrTemplate.queryForPage(query, TbItem.class);*/
-		
 		map.put("rows", page.getContent());
-		return map;
-		
-		
-	}
+		return map;	
+	} 
 
 }
