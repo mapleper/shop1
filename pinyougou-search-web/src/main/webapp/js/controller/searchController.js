@@ -15,4 +15,13 @@ app.controller('searchController',function($scope,searchService) {
 			$scope.searchMap.spec[key]=value;
 		}
 	}
+	//移除复合搜索条件--点击面包屑的X
+	$scope.removeSearchItem=function(key) {
+		if(key=='category'||key=='brand') {
+			$scope.searchMap[key]="";
+		}else{
+			//否则是规格选项
+			delete $scope.searchMap.spec[key];//移除此属性
+		}
+	}
 });
