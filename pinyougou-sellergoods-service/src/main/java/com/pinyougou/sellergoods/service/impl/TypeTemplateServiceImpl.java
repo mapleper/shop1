@@ -70,8 +70,9 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 			//存储规格列表
 			List<Map> specList = findSpecList(tbTypeTemplate.getId());
 			redisTemplate.boundHashOps("specList").put(tbTypeTemplate.getId(), specList);
-			System.out.println("存入品牌  规格列表入缓存");
+			
 		}
+		System.out.println("存入品牌  规格列表入缓存");
 	}
 
 	/**
