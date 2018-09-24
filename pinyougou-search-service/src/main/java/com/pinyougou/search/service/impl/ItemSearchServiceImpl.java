@@ -52,11 +52,18 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 		List<String> categoryList = searchCategoryList(searchMap);
 		map.put("categoryList", categoryList);
 		//3.查询品牌和规格列表
-		if(categoryList.size()>0) {
-			//可能存在多个品牌  我们取第一个展示
-			map.putAll(searchBrandAndSpecList(categoryList.get(0)));
-			System.out.println(searchBrandAndSpecList(categoryList.get(0))); 
-			
+		String categoryName=(String) searchMap.get("category");
+		if(!"".equals(categoryName)) {
+			//如果传入了分类名称  则就是点击了分类
+			map.putAll(searchBrandAndSpecList(categoryName));
+		}else {
+			//若没有就按第一个查询
+			if(categoryList.size()>0) {
+				//可能存在多个品牌  我们取第一个展示
+				map.putAll(searchBrandAndSpecList(categoryList.get(0)));
+				System.out.println(searchBrandAndSpecList(categoryList.get(0))); 
+				
+			}
 		}
 		return map;	
 	}
