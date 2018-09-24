@@ -164,7 +164,7 @@
 			</div>
 			<!--selector-->
 			<div class="clearfix selector">
-				<div class="type-wrap" ng-if="resultMap.categoryList!=null">
+				<div class="type-wrap" ng-if="resultMap.categoryList!=null && searchMap.category==''">
 					<div class="fl key">商品分类</div>
 					<div class="fl value">
 					<span ng-repeat="category in resultMap.categoryList">
@@ -174,7 +174,7 @@
 					</div>
 					<div class="fl ext"></div>
 				</div>
-				<div class="type-wrap logo" ng-if="resultMap.brandList!=null">
+				<div class="type-wrap logo" ng-if="resultMap.brandList!=null&& searchMap.brand==''">
 					<div class="fl key brand">品牌</div>
 					<div class="value logos">
 						<ul class="logo-list">
@@ -191,7 +191,7 @@
 					</div>
 				</div>
 				<!-- 规格 -->
-				<div class="type-wrap" ng-repeat="spec in resultMap.specList">
+				<div class="type-wrap" ng-repeat="spec in resultMap.specList" ng-if="searchMap.spec[spec.text]==null">
 					<div class="fl key">{{spec.text}}</div>
 					<div class="fl value">
 						<ul class="type-list">

@@ -14,6 +14,7 @@ app.controller('searchController',function($scope,searchService) {
 			//点击的是规格
 			$scope.searchMap.spec[key]=value;
 		}
+		$scope.search();//执行搜索
 	}
 	//移除复合搜索条件--点击面包屑的X
 	$scope.removeSearchItem=function(key) {
@@ -23,5 +24,6 @@ app.controller('searchController',function($scope,searchService) {
 			//否则是规格选项
 			delete $scope.searchMap.spec[key];//移除此属性
 		}
+		$scope.search();//执行搜索
 	}
 });
