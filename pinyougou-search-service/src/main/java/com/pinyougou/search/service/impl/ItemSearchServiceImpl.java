@@ -10,10 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.Criteria;
+import org.springframework.data.solr.core.query.FilterQuery;
 import org.springframework.data.solr.core.query.GroupOptions;
 import org.springframework.data.solr.core.query.HighlightOptions;
 import org.springframework.data.solr.core.query.HighlightQuery;
 import org.springframework.data.solr.core.query.Query;
+import org.springframework.data.solr.core.query.SimpleFilterQuery;
 import org.springframework.data.solr.core.query.SimpleHighlightQuery;
 import org.springframework.data.solr.core.query.SimpleQuery;
 import org.springframework.data.solr.core.query.result.GroupEntry;
@@ -70,8 +72,37 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 		highlightOptions.setSimplePostfix("</em>"); //高亮后缀
 		query.setHighlightOptions(highlightOptions);
 		
+		//1.1关键字查询
 		Criteria criteria=new Criteria("item_keywords").is(searchMap.get("keywords"));
 		query.addCriteria(criteria);
+		//1.2按商品分类筛选
+		if(!"".equals(searchMap.get("category"))) {
+			FilterQuery filterQuery=new SimpleFilterQuery();
+			Criteria filterCriteria=new Criteria("item_category").is(searchMap.get("category"));
+			filterQuery.addCriteria(filterCriteria);
+			query.addFilterQuery(filterQuery);
+		}
+		//1.3按品牌过滤
+		if(!"".equals(searchMap.get("brand"))) {
+			FilterQuery filterQuery=new SimpleFilterQuery();
+			Criteria filterCriteria=new Criteria("item_brand").is(searchMap.get("brand"));
+			filterQuery.addCriteria(filterCriteria);
+			query.addFilterQuery(filterQuery);
+		}
+		//1.4按规格过滤
+		//这里好像本身就不为null
+		if(searchMap.get("spec")!=null) {
+			Map<String, String> specMap = (Map<String, String>) searchMap.get("spec");
+			for(String key:specMap.keySet()) {		
+				Criteria filterCriteria=new Criteria("item_spec_"+key).is(specMap.get(key));
+				FilterQuery filterQuery=new SimpleFilterQuery(filterCriteria);
+				query.addFilterQuery(filterQuery);
+			}
+		}
+		
+		
+		
+		//*********获取高亮结果集
 		//高亮页对象
 		HighlightPage<TbItem> page = solrTemplate.queryForHighlightPage(query, TbItem.class);
 		//高亮入口集合(每条记录的高亮入口)
