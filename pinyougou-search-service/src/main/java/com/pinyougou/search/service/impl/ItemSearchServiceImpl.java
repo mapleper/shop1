@@ -67,7 +67,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 		}
 		return map;	
 	}
-	//查询列表
+	//查询列表--数据结果列表
 	private Map  searchList(Map searchMap) {
 		Map map=new HashMap<>();
 		
@@ -105,6 +105,26 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 				FilterQuery filterQuery=new SimpleFilterQuery(filterCriteria);
 				query.addFilterQuery(filterQuery);
 			}
+		}
+		//1.5按价格过滤
+		if(!"".equals(searchMap.get("price"))) {
+			String priceStr=(String) searchMap.get("price");
+			String[] price= priceStr.split("-");//得到的是一个  [x,y]的两个值
+			
+			if(!price[0].equals("0")) {
+				//如果起始值大于0  
+				Criteria filterCriteria=new Criteria("item_price").greaterThanEqual(price[0]);
+				FilterQuery filterQuery=new SimpleFilterQuery(filterCriteria);
+				query.addFilterQuery(filterQuery);	
+			}
+			if(!price[1].equals("*")) {
+				//如果区间最大值不为*
+				Criteria filterCriteria=new Criteria("item_price").lessThanEqual(price[1]);
+				FilterQuery filterQuery=new SimpleFilterQuery(filterCriteria);
+				query.addFilterQuery(filterQuery);
+			}
+			
+			
 		}
 		
 		
