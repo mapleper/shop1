@@ -65,5 +65,24 @@ app.controller('searchController',function($scope,searchService) {
 		$scope.search();
 	}
 	
+	//为上一页 下一页按钮定义判断方法
+	//判断当前页为第一页
+	$scope.isTopPage=function(){
+		if($scope.searchMap.pageNo==1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	//判断当前页是否未最后一页
+	$scope.isEndPage=function(){
+	if($scope.searchMap.pageNo==$scope.resultMap.totalPages){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	
 	
 });

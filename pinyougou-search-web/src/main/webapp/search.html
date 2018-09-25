@@ -317,7 +317,7 @@
 				<div class="fr page">
 					<div class="sui-pagination pagination-large">
 						<ul>
-							<li class="prev disabled">
+							<li class="prev {{isTopPage()?'disabled':''}}">
 								<a href="#" ng-click="queryByPage(searchMap.pageNo-1)">«</a>
 							</li>
 							<li class="{{searchMap.pageNo==p?'active':''}}" ng-repeat="p in pageLabel">
@@ -325,7 +325,7 @@
 							</li>
 							
 							<li class="dotted"><span>...</span></li>
-							<li class="next">
+							<li class="next {{isEndPage()?'disabled':''}}"">
 								<a href="#" ng-click="queryByPage(searchMap.pageNo+1)">»</a>
 							</li>
 						</ul>
