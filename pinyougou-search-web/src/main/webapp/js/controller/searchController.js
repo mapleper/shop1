@@ -1,5 +1,6 @@
 app.controller('searchController',function($scope,searchService) {
 	$scope.search=function() {
+		$scope.searchMap.pageNo= parseInt($scope.searchMap.pageNo) ;
 		searchService.search($scope.searchMap).success(function(response) {
 			$scope.resultMap=response;//搜索返回的结果
 			buildPageLabel();//调用  得到标签码
@@ -54,4 +55,15 @@ app.controller('searchController',function($scope,searchService) {
 		}
 
 	}
+	//根据指定页码查询
+	$scope.queryByPage=function(pageNo) {
+		//页码验证  防止页码溢出
+		if(pageNo<1 || pageNo>$scope.resultMap.totalPages) {
+			return;
+		}
+		$scope.searchMap.pageNo=pageNo;
+		$scope.search();
+	}
+	
+	
 });
