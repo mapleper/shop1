@@ -2,9 +2,10 @@ app.controller('searchController',function($scope,searchService) {
 	$scope.search=function() {
 		searchService.search($scope.searchMap).success(function(response) {
 			$scope.resultMap=response;//搜索返回的结果
+			buildPageLabel();//调用  得到标签码
 		});
 	}
-	$scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':''};//搜索对象
+	$scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':'','pageNo':1,'pageSize':40};//搜索对象
 	//添加搜索项
 	$scope.addSearchItem=function(key,value) {
 		if(key=='category'||key=='brand'||key=='price') {
@@ -25,5 +26,32 @@ app.controller('searchController',function($scope,searchService) {
 			delete $scope.searchMap.spec[key];//移除此属性
 		}
 		$scope.search();//执行搜索
+	}
+	//构建分页标签
+	buildPageLabel=function() {
+		$scope.pageLabel=[];//新增分页栏属性
+		//优化分页栏页码过多    先定义初始页码和最后页码
+		var firstPage=1;//初始化开始页码
+		var lastPage=$scope.resultMap.totalPages;//初始化截止页码
+		if($scope.resultMap.totalPages>5) {//如果总页数大于5页 显示部分页码
+			if($scope.searchMap.pageNo<=3) {//如果当前页小于等于3
+				//两个对象间才会形成浅克隆的影响   数字则不会
+				lastPage=5;
+			}else if($scope.searchMap.pageNo>=$scope.resultMap.totalPages-2) {
+				//最后5条记录
+				firstPage=$scope.resultMap.totalPages-4;
+			}else{
+				//中间记录
+				firstPage=$scope.searchMap.pageNo-2;
+				lastPage=$scope.searchMap.pageNo+2;
+			}
+				
+			
+		}
+		//循环产生页码标签
+		for(var i=firstPage;i<=lastPage;i++){
+			$scope.pageLabel.push(i);
+		}
+
 	}
 });
