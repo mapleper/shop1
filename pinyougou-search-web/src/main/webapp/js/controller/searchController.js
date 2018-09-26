@@ -6,7 +6,7 @@ app.controller('searchController',function($scope,searchService) {
 			buildPageLabel();//调用  得到标签码
 		});
 	}
-	$scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':'','pageNo':1,'pageSize':40};//搜索对象
+	$scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':'','pageNo':1,'pageSize':40,'sortField':'','sort':''};//搜索对象
 	//添加搜索项
 	$scope.addSearchItem=function(key,value) {
 		if(key=='category'||key=='brand'||key=='price') {
@@ -91,6 +91,12 @@ app.controller('searchController',function($scope,searchService) {
 		}else{
 			return false;
 		}
+	}
+	//设置排序规则
+	$scope.sortSearch=function(sortField,sort) {
+		$scope.searchMap.sortField=sortField;
+		$scope.searchMap.sort=sort;
+		$scope.search();
 	}
 
 	

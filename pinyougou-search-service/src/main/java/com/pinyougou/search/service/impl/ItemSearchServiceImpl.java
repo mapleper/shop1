@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.Criteria;
@@ -144,6 +145,23 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 		query.setOffset((pageNo-1)*pageSize);
 		//设置每页记录条数
 		query.setRows(pageSize);
+		
+		//1.7排序
+		String sortValue=(String) searchMap.get("sort");//得到排序的样式 ASC DESC
+		String sortField=(String) searchMap.get("sortField");//得到按照哪个域排序
+		
+		if(sortValue!=null&&!sortField.equals("")) {
+			if(sortValue.equals("ASC")) {
+				//若是升序				
+				Sort sort=new Sort(Sort.Direction.ASC, "item_"+sortField);
+				query.addSort(sort);
+			}
+			if(sortValue.equals("DESC")) {
+				//降序
+				Sort sort=new Sort(Sort.Direction.DESC, "item_"+sortField);
+				query.addSort(sort);
+			}
+		}
 		
 		
 		//*********获取高亮结果集
