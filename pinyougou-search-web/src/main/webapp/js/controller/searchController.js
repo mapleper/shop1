@@ -111,7 +111,11 @@ app.controller('searchController',function($scope,$location,searchService) {
 	//接收首页传来的参数 并搜索
 	$scope.loadkeywords=function() {
 		$scope.searchMap.keywords=$location.search()['keywords'];
-		$scope.search();
+		//因为每次搜索页初始化就会调用这个方法  若前面页没有传入keywords就会形成空指针异常  需要处理
+		if($scope.searchMap.keywords!=null) {
+			$scope.search();
+		}
+		
 	}
 	
 	
