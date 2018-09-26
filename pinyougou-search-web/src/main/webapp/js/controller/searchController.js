@@ -34,13 +34,19 @@ app.controller('searchController',function($scope,searchService) {
 		//优化分页栏页码过多    先定义初始页码和最后页码
 		var firstPage=1;//初始化开始页码
 		var lastPage=$scope.resultMap.totalPages;//初始化截止页码
+		
+		//定义两个变量  用于确定页码左右是否存在省略号
+		$scope.firstDot=true;//左边省略号
+		$scope.lastDot=true;//右边省略号
 		if($scope.resultMap.totalPages>5) {//如果总页数大于5页 显示部分页码
 			if($scope.searchMap.pageNo<=3) {//如果当前页小于等于3
 				//两个对象间才会形成浅克隆的影响   数字则不会
 				lastPage=5;
+				$scope.firstDot=false;//若显示前5页时 则 左边不会有省略号
 			}else if($scope.searchMap.pageNo>=$scope.resultMap.totalPages-2) {
 				//最后5条记录
 				firstPage=$scope.resultMap.totalPages-4;
+				$scope.lastDot=false;//显示最后5页  右边不会有省略号
 			}else{
 				//中间记录
 				firstPage=$scope.searchMap.pageNo-2;
@@ -48,6 +54,10 @@ app.controller('searchController',function($scope,searchService) {
 			}
 				
 			
+		}else{
+			//若总页码数不足5页  则左右都没有省略号
+			$scope.firstDot=false;//前面无点
+			$scope.lastDot=false;//后边无点
 		}
 		//循环产生页码标签
 		for(var i=firstPage;i<=lastPage;i++){
@@ -76,7 +86,7 @@ app.controller('searchController',function($scope,searchService) {
 	}
 	//判断当前页是否未最后一页
 	$scope.isEndPage=function(){
-	if($scope.searchMap.pageNo==$scope.resultMap.totalPages){
+		if($scope.searchMap.pageNo==$scope.resultMap.totalPages){
 			return true;
 		}else{
 			return false;
