@@ -1,4 +1,4 @@
-app.controller('searchController',function($scope,searchService) {
+app.controller('searchController',function($scope,$location,searchService) {
 	$scope.search=function() {
 		$scope.searchMap.pageNo= parseInt($scope.searchMap.pageNo) ;
 		searchService.search($scope.searchMap).success(function(response) {
@@ -108,7 +108,11 @@ app.controller('searchController',function($scope,searchService) {
 		}
 		return false;
 	}
-
+	//接收首页传来的参数 并搜索
+	$scope.loadkeywords=function() {
+		$scope.searchMap.keywords=$location.search()['keywords'];
+		$scope.search();
+	}
 	
 	
 });
