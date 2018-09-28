@@ -12,9 +12,13 @@
     <link rel="stylesheet" type="text/css" href="css/pages-item.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
+    
+    <script type="text/javascript" src="plugins/angularjs/angular.min.js"> </script>
+	<script type="text/javascript" src="js/base.js"> </script>
+	<script type="text/javascript" src="js/controller/itemController.js"> </script> 
 </head>
 
-<body>
+<body ng-app="pinyougou" ng-controller="itemController" ng-init="num=1">
 <#--图片列表数据json化-->
 <#assign imageList=goodsDesc.itemImages?eval/>
 <#--扩展属性数据json化-->
@@ -139,9 +143,9 @@
 							<div class="fl title">
 								<div class="control-group">
 									<div class="controls">
-										<input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
-										<a href="javascript:void(0)" class="increment plus">+</a>
-										<a href="javascript:void(0)" class="increment mins">-</a>
+										<input autocomplete="off" type="text" value="{{num}}" minnum="1" class="itxt" />
+										<a href="javascript:void(0)" ng-click="addNum(1)" class="increment plus">+</a>
+										<a href="javascript:void(0)" ng-click="addNum(-1)" class="increment mins">-</a>
 									</div>
 								</div>
 							</div>
