@@ -29,15 +29,15 @@
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
 					<li>
-						<a href="#">手机、数码、通讯</a>
+						<a href="#">${itemCat1}</a>
 					</li>
 					<li>
-						<a href="#">手机</a>
+						<a href="#">${itemCat2}</a>
 					</li>
 					<li>
-						<a href="#">Apple苹果</a>
+						<a href="#">${itemCat3}</a>
 					</li>
-					<li class="active">iphone 6S系类</li>
+					
 				</ul>
 			</div>
 			<!--product-info-->
