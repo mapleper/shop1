@@ -119,6 +119,10 @@ public class GoodsController {
 				}else {
 					System.out.println("没有对应的SKU数据,没有更新索引库");
 				}
+				//生成商品详细信息静态页
+				for(Long goodsId:ids) {
+					itemPageService.genItemHtml(goodsId);
+				}
 				
 			}
 			
@@ -128,6 +132,7 @@ public class GoodsController {
 			return new Result(false, "失败");
 			}
 	}
+	//测试用
 	@RequestMapping("/genHtml")
 	public void genHtml(Long goodsId) {
 		itemPageService.genItemHtml(goodsId);
