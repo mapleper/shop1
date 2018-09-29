@@ -45,6 +45,8 @@ public class GoodsController {
 	@Autowired
 	private JmsTemplate jmsTemplate;
 	
+	@Autowired
+	private Destination queueSolrDeleteDestination;//用户在索引库中删除记录
 	/**
 	 * 返回全部列表
 	 * @return
@@ -98,11 +100,20 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/delete")
-	public Result delete(Long [] ids){
+	public Result delete(final Long [] ids){
 		try {
 			goodsService.delete(ids);
 			//从索引库中删除
 			//itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+			//发送信息至activeMQ
+			jmsTemplate.send(queueSolrDeleteDestination, new  MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					return session.createObjectMessage(ids);
+				}
+			});
+			
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
