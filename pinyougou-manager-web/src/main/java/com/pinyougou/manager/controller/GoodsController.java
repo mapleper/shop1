@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.sellergoods.service.GoodsService;
@@ -36,8 +35,8 @@ public class GoodsController {
 	private GoodsService goodsService;
 	//@Reference(timeout=100000)
 	//private ItemSearchService itemSearchService;
-	@Reference(timeout=40000)
-	private ItemPageService itemPageService;
+	//@Reference(timeout=40000)
+	//private ItemPageService itemPageService;
 	
 	
 	@Autowired
@@ -47,6 +46,8 @@ public class GoodsController {
 	
 	@Autowired
 	private Destination queueSolrDeleteDestination;//用户在索引库中删除记录
+	@Autowired
+	private Destination topicPageDestination;
 	/**
 	 * 返回全部列表
 	 * @return
@@ -157,10 +158,19 @@ public class GoodsController {
 				}
 				
 				
-				//生成商品详细信息静态页
-				/*for(Long goodsId:ids) {
-					itemPageService.genItemHtml(goodsId);
-				}*/
+				//发送消息至activeMQ  生成商品详细信息静态页
+				for(final Long goodsId:ids) {
+					//itemPageService.genItemHtml(goodsId);
+					
+					jmsTemplate.send(topicPageDestination, new MessageCreator() {
+						
+						@Override
+						public Message createMessage(Session session) throws JMSException {
+							return session.createTextMessage(goodsId+"");
+						}
+					});
+				}
+				
 				
 			}
 			
@@ -173,7 +183,7 @@ public class GoodsController {
 	//测试用
 	@RequestMapping("/genHtml")
 	public void genHtml(Long goodsId) {
-		itemPageService.genItemHtml(goodsId);
+		//itemPageService.genItemHtml(goodsId);
 	}
 	
 }
