@@ -2,14 +2,22 @@ package com.pinyougou.manager.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
-import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 
 import entity.PageResult;
@@ -26,10 +34,16 @@ public class GoodsController {
 
 	@Reference
 	private GoodsService goodsService;
-	@Reference(timeout=100000)
-	private ItemSearchService itemSearchService;
+	//@Reference(timeout=100000)
+	//private ItemSearchService itemSearchService;
 	@Reference(timeout=40000)
 	private ItemPageService itemPageService;
+	
+	
+	@Autowired
+	private Destination queueSolrDestination;//用于发送 solr 导入的消息
+	@Autowired
+	private JmsTemplate jmsTemplate;
 	
 	/**
 	 * 返回全部列表
@@ -87,7 +101,8 @@ public class GoodsController {
 	public Result delete(Long [] ids){
 		try {
 			goodsService.delete(ids);
-			itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+			//从索引库中删除
+			//itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -115,14 +130,26 @@ public class GoodsController {
 				List<TbItem> itemList = goodsService.findItemListByGoodsIdandStatus(ids, status);
 				//数据导入索引库
 				if(itemList.size()>0) {
-					itemSearchService.importList(itemList);
+					//itemSearchService.importList(itemList);
+					//发送消息到activeMQ
+					final String jsonString = JSON.toJSONString(itemList);
+					jmsTemplate.send(queueSolrDestination, new MessageCreator() {
+						
+						@Override
+						public Message createMessage(Session session) throws JMSException {
+							
+							return session.createTextMessage(jsonString);
+						}
+					});
 				}else {
 					System.out.println("没有对应的SKU数据,没有更新索引库");
 				}
+				
+				
 				//生成商品详细信息静态页
-				for(Long goodsId:ids) {
+				/*for(Long goodsId:ids) {
 					itemPageService.genItemHtml(goodsId);
-				}
+				}*/
 				
 			}
 			

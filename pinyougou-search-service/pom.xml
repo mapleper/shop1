@@ -75,6 +75,13 @@
 		<artifactId>servlet-api</artifactId>		
 		<scope>provided</scope>
 	</dependency>
+	
+	<!-- activemq -->
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-client</artifactId>
+	    <version>5.12.0</version>
+	</dependency>
   
   	<dependency>
   		<groupId>com.pinyougou</groupId>
