@@ -23,11 +23,22 @@
 	</bean>    
 	
 	
-	<!-- 消息监听容器 -->
+	<!-- 消息监听容器  生成静态页-->
 	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="destination" ref="topicPageDestination" />
 		<property name="messageListener" ref="pageListener" />
+	</bean>
+	
+	<!--删除页面 -->
+	<bean id="topicPageDeleteDestination" class="org.apache.activemq.command.ActiveMQTopic">
+	 	<constructor-arg value="pinyougou_topic_page_delete"/>
+	</bean>
+	<!-- 消息监听容器 删除静态页 -->
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="topicPageDeleteDestination" />
+		<property name="messageListener" ref="pageDeleteListener" />
 	</bean>
 	
 </beans>

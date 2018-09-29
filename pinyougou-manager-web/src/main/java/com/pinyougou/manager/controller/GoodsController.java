@@ -48,6 +48,8 @@ public class GoodsController {
 	private Destination queueSolrDeleteDestination;//用户在索引库中删除记录
 	@Autowired
 	private Destination topicPageDestination;
+	@Autowired
+	private Destination topicPageDeleteDestination;//用于删除静态网页的消息
 	/**
 	 * 返回全部列表
 	 * @return
@@ -114,7 +116,14 @@ public class GoodsController {
 					return session.createObjectMessage(ids);
 				}
 			});
-			
+			//发送消息 删除静态页面
+			jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					return session.createObjectMessage(ids);
+				}
+			});
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
