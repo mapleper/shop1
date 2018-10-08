@@ -1,12 +1,24 @@
 package com.pinyougou.user.service.impl;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbUserMapper;
@@ -30,6 +42,16 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
+	
+	@Autowired
+	private JmsTemplate jmsTemplate;
+	@Autowired
+	private Destination smsDestination;
+	@Value("${template_code}")
+	private String template_code;
+	@Value("${sign_name}")
+	private String sign_name;
+
 	
 	/**
 	 * 查询全部
@@ -149,15 +171,29 @@ public class UserServiceImpl implements UserService {
 		 * 生成短信验证码
 		 */
 		@Override
-		public void createSmsCode(String phone) {
+		public void createSmsCode(final String phone) {
 			//生成6位随机数
-			String code=(long)(Math.random()*1000000)+"";
+			final String code=(long)(Math.random()*1000000)+"";
 			System.out.println("验证码："+code);
 			
 			//存入缓存
 			redisTemplate.boundHashOps("smscode").put(phone, code);
 			
 			//发送到activeMQ
+			jmsTemplate.send(smsDestination, new MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					MapMessage mapMessage = session.createMapMessage();
+					mapMessage.setString("mobile", phone);//手机号
+					mapMessage.setString("template_code", template_code);//模板编号
+					mapMessage.setString("sign_name", sign_name);//签名
+					Map m=new HashMap<>();
+					m.put("code", code);
+					mapMessage.setString("param", JSON.toJSONString(m));//参数
+					return mapMessage;
+				}
+			});
 			
 		}
 		/**
