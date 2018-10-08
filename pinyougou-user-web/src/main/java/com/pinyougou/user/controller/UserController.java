@@ -10,6 +10,7 @@ import com.pinyougou.user.service.UserService;
 
 import entity.PageResult;
 import entity.Result;
+import util.PhoneFormatCheckUtils;
 /**
  * controller
  * @author Administrator
@@ -47,7 +48,14 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public Result add(@RequestBody TbUser user){
+	public Result add(@RequestBody TbUser user,String smscode){
+		//用户注册前信息判定
+		boolean checkSmsCode = userService.checkSmsCode(user.getPhone(), smscode);
+		if(checkSmsCode==false){
+			return new Result(false, "验证码输入错误！");
+		}
+		
+		
 		try {
 			userService.add(user);
 			return new Result(true, "增加成功");
@@ -109,6 +117,25 @@ public class UserController {
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbUser user, int page, int rows  ){
 		return userService.findPage(user, page, rows);		
+	}
+	/**
+	 * 发送短信验证码
+	 * @param phone
+	 * @return
+	 */
+	@RequestMapping("/sendCode")
+	public Result sendCode(String phone) {
+		//判断手机号格式
+		if(!PhoneFormatCheckUtils.isPhoneLegal(phone)){
+			return new Result(false, "手机号格式不正确");
+		}
+		try {
+			userService.createSmsCode(phone);//生成验证码
+			return new Result(true, "验证码发送成功");
+			} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(true, "验证码发送失败");
+		}
 	}
 	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private TbUserMapper userMapper;
+	
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 	
 	/**
 	 * 查询全部
@@ -140,5 +145,35 @@ public class UserServiceImpl implements UserService {
 		Page<TbUser> page= (Page<TbUser>)userMapper.selectByExample(example);		
 		return new PageResult(page.getTotal(), page.getResult());
 	}
+		/**
+		 * 生成短信验证码
+		 */
+		@Override
+		public void createSmsCode(String phone) {
+			//生成6位随机数
+			String code=(long)(Math.random()*1000000)+"";
+			System.out.println("验证码："+code);
+			
+			//存入缓存
+			redisTemplate.boundHashOps("smscode").put(phone, code);
+			
+			//发送到activeMQ
+			
+		}
+		/**
+		 * 判断验证码是否正确
+		 */
+		@Override
+		public boolean checkSmsCode(String phone, String code) {
+			//得到缓存中的验证码
+			String sysCode= (String) redisTemplate.boundHashOps("smscode").get(phone);
+			if(sysCode==null) {
+				return false;
+			}
+			if(!sysCode.equals(code)){
+				return false;
+			}
+			return true;
+		}
 	
 }
