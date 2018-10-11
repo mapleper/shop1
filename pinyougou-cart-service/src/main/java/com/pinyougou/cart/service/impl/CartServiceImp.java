@@ -11,6 +11,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.cart.service.CartService;
 import com.pinyougou.mapper.TbItemMapper;
 import com.pinyougou.pojo.TbItem;
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
 
 import pojogroup.Cart;
@@ -147,6 +148,22 @@ public class CartServiceImp implements CartService {
 		System.out.println("向redis中存入购物车数据..."+username);
 		
 		redisTemplate.boundHashOps("cartList").put(username, cartList);
+	}
+	/**
+	 * 合并cookie与redis中的购物车数据
+	 */
+	@Override
+	public List<Cart> mergeCartList(List<Cart> cartList1, List<Cart> cartList2) {
+		System.out.println("合并购物车...");
+		for (Cart cart : cartList2) {
+			for(TbOrderItem orderItem:cart.getOrderItemList()) {
+				//将cartList2的数据作为添加的商品数据--方法参数  添加到cartList1中
+				cartList1=addGoodsToCartList(cartList1, orderItem.getItemId(), orderItem.getNum());
+				
+			}
+		}
+	
+		return cartList1;
 	}
 
 }
