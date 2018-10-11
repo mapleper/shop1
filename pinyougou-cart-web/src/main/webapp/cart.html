@@ -88,13 +88,13 @@
 								
 								<li class="yui3-u-1-8"><span class="price">{{orderItem.price}}</span></li>
 								<li class="yui3-u-1-8">
-									<a href="javascript:void(0)" class="increment mins">-</a>
+									<a href="javascript:void(0)" class="increment mins" ng-click="addGoodsToCartList(orderItem.itemId,-1)">-</a>
 									<input autocomplete="off" type="text" value="1" minnum="1" ng-model="orderItem.num"  class="itxt" />
-									<a href="javascript:void(0)" class="increment plus">+</a>
+									<a href="javascript:void(0)" class="increment plus" ng-click="addGoodsToCartList(orderItem.itemId,1)">+</a>
 								</li>
 								<li class="yui3-u-1-8"><span class="sum">{{orderItem.totalFee}}</span></li>
 								<li class="yui3-u-1-8">
-									<a href="#none">删除</a><br />
+									<a href="#none" ng-click="addGoodsToCartList(orderItem.itemId,-orderItem.num)">删除</a><br />
 									<a href="#none">移到我的关注</a>
 								</li>
 							</ul>

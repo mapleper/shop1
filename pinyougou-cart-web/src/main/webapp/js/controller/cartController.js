@@ -8,4 +8,15 @@ app.controller('cartController',function($scope,cartService){
 				}
 		);
 	}
+	
+	//添加商品到购物车
+	$scope.addGoodsToCartList=function(itemId,num) {
+		cartService.addGoodsToCartList(itemId,num).success(function(response) {
+			if(response.success) {
+				$scope.findCartList();//添加成功刷新页面
+			}else{
+				alert(response.message);//弹出错误提示
+			}
+		});
+	}
 });

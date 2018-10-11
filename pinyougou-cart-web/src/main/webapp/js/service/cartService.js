@@ -4,4 +4,9 @@ app.service('cartService',function($http){
 	this.findCartList=function(){
 		return $http.get('cart/findCartList.do');
 	}
+	
+	//添加商品到购物车
+	this.addGoodsToCartList=function(itemId,num){
+		return $http.get('cart/addGoodsToCartList.do?itemId='+itemId+'&num='+num);
+	}
 });
