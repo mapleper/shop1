@@ -10,12 +10,14 @@
 	<http pattern="/plugins/**" security="none"></http>
 	
 	<http pattern="/cart.html" security="none"></http>
-	<http pattern="/cart/*.do" security="none"></http>
+	
 	
 
 	
 	<!--   entry-point-ref  入口点引用 (因为登录页不再是springsecurity配置的登录页面而是cas)-->
-	<http use-expressions="false" entry-point-ref="casProcessingFilterEntryPoint">  
+	<http use-expressions="false" entry-point-ref="casProcessingFilterEntryPoint">
+		<!-- 没有认证 也能访问  依然走的是cas springsecurity -->
+		<intercept-url pattern="/cart/*.do" access="IS_AUTHENTICATED_ANONYMOUSLY"/>  
         <intercept-url pattern="/**" access="ROLE_USER"/>   
         <csrf disabled="true"/>  
         <!-- custom-filter为过滤器， position 表示将过滤器放在指定的位置上，before表示放在指定位置之前  ，after表示放在指定的位置之后  -->           
