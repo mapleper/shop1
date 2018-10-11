@@ -5,6 +5,7 @@ app.controller('cartController',function($scope,cartService){
 		cartService.findCartList().success(
 				function(response){
 					$scope.cartList=response;
+					$scope.totalValue=cartService.sum($scope.cartList);//求合计数
 				}
 		);
 	}

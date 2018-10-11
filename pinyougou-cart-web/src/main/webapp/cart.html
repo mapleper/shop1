@@ -116,10 +116,10 @@
 					<a href="#none">清除下柜商品</a>
 				</div>
 				<div class="toolbar">
-					<div class="chosed">已选择<span>0</span>件商品</div>
+					<div class="chosed">已选择<span>{{totalValue.totalNum}}</span>件商品</div>
 					<div class="sumprice">
-						<span><em>总价（不含运费） ：</em><i class="summoney">¥16283.00</i></span>
-						<span><em>已节省：</em><i>-¥20.00</i></span>
+						<span><em>总价（不含运费） ：</em><i class="summoney">¥{{totalValue.totalMoney}}</i></span>
+						<span><em>已节省：</em><i>-¥0.00</i></span>
 					</div>
 					<div class="sumbtn">
 						<a class="sum-btn" href="getOrderInfo.html" target="_blank">结算</a>
