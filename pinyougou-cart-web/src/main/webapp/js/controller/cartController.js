@@ -54,6 +54,26 @@ app.controller('cartController',function($scope,cartService){
 	$scope.order={paymentType:'1'};
 	//选择支付方式
 	$scope.selectPayType=function(type){
-			$scope.order.paymentType=type;
-		}
+		$scope.order.paymentType=type;
+	}
+	
+	//保存订单
+	$scope.submitOrder=function() {
+		$scope.order.receiverAreaName=$scope.address.address;//地址
+		$scope.order.receiverMobile=$scope.address.mobile;//手机
+		$scope.order.receiver=$scope.address.contact;//联系人
+		
+		cartService.submitOrder($scope.order).success(function(response) {
+			if(response.success) {//提交成功
+				//根据不同支付方式跳转不同页面
+				if($scope.order.paymentType=='1') {//如果是微信支付,跳转到支付页面
+					location.href="pay.html";
+				}else{//如果是货到付款,跳转到提示页面
+					location.href="paysuccess.html";
+				}
+			}else{
+				alert(response.message); //也可以跳转到提示页面
+			}
+		});
+	}
 });
