@@ -29,6 +29,7 @@ app.controller('cartController',function($scope,cartService){
 			//加载默认地址
 			for(var i=0;i<$scope.addressList.length;i++) {
 				if($scope.addressList[i].isDefault=='1'){
+					//被选择的样式是根据$scope.address来判断的 我们让页面加载时给它赋值
 					$scope.address=$scope.addressList[i];
 					break;
 				}
@@ -49,4 +50,10 @@ app.controller('cartController',function($scope,cartService){
 			return false;
 		}
 	}
+	//初始化一个订单对象
+	$scope.order={paymentType:'1'};
+	//选择支付方式
+	$scope.selectPayType=function(type){
+			$scope.order.paymentType=type;
+		}
 });
