@@ -22,10 +22,16 @@ app.controller('payController',function($scope,payService) {
 	queryPayStatus=function(out_trade_no){
 		payService.queryPayStatus(out_trade_no).success(
 				function(response){
-					if(response.success){
+					if(response.success){//支付成功
 						location.href="paysuccess.html";
-					}else{
-						location.href="payfail.html";
+					}else{//支付失败
+						if(response.message=='二维码超时') {
+							
+							$scope.createNative();//重新生成二维码
+						}else{
+							location.href="payfail.html";
+						}
+						
 					}
 				}
 		);
