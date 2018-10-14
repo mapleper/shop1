@@ -1,0 +1,15 @@
+package com.pinyougou.pay.service;
+
+import java.util.Map;
+
+public interface WeixinPayService {
+	
+	/**
+	 * 生成微信支付二维码   携带参数发送请求到微信统一下单接口
+	 * @param out_trade_no商户订单号
+	 * @param total_fee金额(分)
+	 * @return
+	 */
+	public Map createNative(String out_trade_no,String total_fee);
+
+}
