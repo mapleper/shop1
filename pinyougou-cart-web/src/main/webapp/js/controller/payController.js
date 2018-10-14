@@ -1,4 +1,4 @@
-app.controller('payController',function($scope,payService) {
+app.controller('payController',function($scope,$location,payService) {
 	//本地生成二维码
 	$scope.createNative=function() {
 		payService.createNative().success(function(response) {
@@ -23,11 +23,13 @@ app.controller('payController',function($scope,payService) {
 		payService.queryPayStatus(out_trade_no).success(
 				function(response){
 					if(response.success){//支付成功
-						location.href="paysuccess.html";
+						location.href="paysuccess.html#?money="+$scope.money;
 					}else{//支付失败
 						if(response.message=='二维码超时') {
+							if(confirm("二维码已过期，点击确定更新二维码")) {
+								$scope.createNative();//重新生成二维码
+							}
 							
-							$scope.createNative();//重新生成二维码
 						}else{
 							location.href="payfail.html";
 						}
@@ -35,5 +37,10 @@ app.controller('payController',function($scope,payService) {
 					}
 				}
 		);
+	}
+	
+	//获取金额
+	$scope.getMoney=function(){
+		return $location.search()['money'];
 	}
 });
