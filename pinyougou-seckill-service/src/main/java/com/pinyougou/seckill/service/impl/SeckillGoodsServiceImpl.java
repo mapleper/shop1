@@ -2,6 +2,8 @@ package com.pinyougou.seckill.service.impl;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -23,6 +25,9 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 
 	@Autowired
 	private TbSeckillGoodsMapper seckillGoodsMapper;
+	
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	/**
 	 * 查询全部
@@ -114,16 +119,28 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 		 */
 		@Override
 		public List<TbSeckillGoods> findList() {
-			
-			TbSeckillGoodsExample example=new TbSeckillGoodsExample();
-			Criteria criteria = example.createCriteria();
-			criteria.andStatusEqualTo("1");//审核已通过的
-			criteria.andStockCountGreaterThan(0);//库存数量大于0
-			criteria.andStartTimeLessThanOrEqualTo(new Date());//开始时间小于等于当前时间
-			criteria.andEndTimeGreaterThan(new Date());//结束时间大于当前时间
-			
-			 return seckillGoodsMapper.selectByExample(example);
-			
+			//获取秒杀商品列表  --hash值获取出来的顺序可能与存的顺序不一致
+			List<TbSeckillGoods> seckillGoodsList =redisTemplate.boundHashOps("seckillGoods").values();
+			//缓存中没有才去数据库查询
+			if(seckillGoodsList==null || seckillGoodsList.size()==0) {
+				TbSeckillGoodsExample example=new TbSeckillGoodsExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andStatusEqualTo("1");//审核已通过的
+				criteria.andStockCountGreaterThan(0);//库存数量大于0
+				criteria.andStartTimeLessThanOrEqualTo(new Date());//开始时间小于等于当前时间
+				criteria.andEndTimeGreaterThan(new Date());//结束时间大于当前时间
+				seckillGoodsList=seckillGoodsMapper.selectByExample(example);
+				//将商品列表装入缓存
+				System.out.println("将秒杀商品列表装入缓存");
+				
+				for(TbSeckillGoods seckillGoods:seckillGoodsList) {
+					redisTemplate.boundHashOps("seckillGoods").put(seckillGoods.getId(), seckillGoods);
+				}
+			}else {
+				System.out.println("从缓存中获取秒杀商品。");
+			}
+			return seckillGoodsList;
+	
 		}
 	
 }
