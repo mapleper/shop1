@@ -110,5 +110,13 @@ public class SeckillGoodsController {
 	public PageResult search(@RequestBody TbSeckillGoods seckillGoods, int page, int rows  ){
 		return seckillGoodsService.findPage(seckillGoods, page, rows);		
 	}
+	/**
+	 * 查询所有秒杀商品
+	 * @return
+	 */
+	@RequestMapping("/findList")
+	public List<TbSeckillGoods> findList() {
+		return seckillGoodsService.findList();
+	}
 	
 }
