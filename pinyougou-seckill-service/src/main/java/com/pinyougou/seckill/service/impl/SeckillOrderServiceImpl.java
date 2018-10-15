@@ -157,5 +157,11 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 			seckillOrder.setStatus("0");//状态
 			redisTemplate.boundHashOps("seckillOrder").put(userId, seckillOrder);
 		}
+
+		@Override
+		public TbSeckillOrder searchOrderFromRedisByUserId(String userId) {
+			
+			return (TbSeckillOrder)redisTemplate.boundHashOps("seckillOrder").get(userId);
+		}
 	
 }
