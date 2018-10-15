@@ -13,7 +13,7 @@ app.controller('payController',function($scope,$location,payService) {
 				value:response.code_url//将返回的地址作为二维码的地址
 			});
 			
-			//queryPayStatus(response.out_trade_no);//查询支付状态
+			queryPayStatus(response.out_trade_no);//查询支付状态
 			
 		});
 	}

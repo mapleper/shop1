@@ -39,13 +39,15 @@ public class PayController {
 			long fen= (long)(seckillOrder.getMoney().doubleValue()*100);//金额（分）
 			return weixinPayService.createNative(seckillOrder.getId()+"",fen+"");
 		}else{
-				return new HashMap();
+			return new HashMap();
 		}
 	
 	}
 	
 	@RequestMapping("/queryPayStatus")
 	public Result  queryPayStatus(String out_trade_no) {
+		//这里需要用户名 是因为需要在缓存中根据这个key查询订单
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		Result result=null;
 		
 		int x=0;
@@ -59,8 +61,9 @@ public class PayController {
 			if(map.get("trade_state").equals("SUCCESS")) {
 				result=new Result(true, "支付成功");
 				
-				//若支付成功，修改订单状态
+				//若支付成功，修改订单状态  将订单存入数据库
 				//orderService.updateOrderStatus(out_trade_no,map.get("transaction_id"));
+				seckillOrderService.saveOrderFromRedisToDb(username,Long.valueOf(out_trade_no), map.get("transaction_id"));
 				break;
 			}
 			
