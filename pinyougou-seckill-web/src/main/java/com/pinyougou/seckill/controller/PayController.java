@@ -77,6 +77,22 @@ public class PayController {
 			x++;
 			if(x>=20) {//1分钟未付款二维码超时
 				result=new Result(false, "二维码超时");
+				//调用微信的关闭订单接口
+				Map<String,String> payresult =weixinPayService.closePay(out_trade_no);
+				if( !"SUCCESS".equals(payresult.get("result_code")) ) {
+					//如果订单未关闭成功
+					if("ORDERPAID".equals(payresult.get("err_code"))) {
+						//如果是已经支付成功
+						result=new Result(true, "支付成功");
+						seckillOrderService.saveOrderFromRedisToDb(username,Long.valueOf(out_trade_no), map.get("transaction_id"));
+					}
+				}
+				if(result.isSuccess()==false){
+					System.out.println("超时，取消订单");
+					//2.调用删除
+					seckillOrderService.deleteOrderFromRedis(username,Long.valueOf(out_trade_no));
+				}
+				
 				break;
 			}
 		}
