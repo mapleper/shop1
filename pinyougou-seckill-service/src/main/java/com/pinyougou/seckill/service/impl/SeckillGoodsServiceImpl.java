@@ -142,5 +142,12 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 			return seckillGoodsList;
 	
 		}
+		/**
+		 * 从缓存中根据ID得到秒杀商品
+		 */
+		@Override
+		public TbSeckillGoods findOneFromRedis(Long id) {
+			return (TbSeckillGoods)redisTemplate.boundHashOps("seckillGoods").get(id);
+		}
 	
 }

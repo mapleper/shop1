@@ -64,4 +64,11 @@ public interface SeckillGoodsService {
 	 */
 	public List<TbSeckillGoods> findList();
 	
+	/**
+	 * 从缓存中得到秒杀商品
+	 * @param id
+	 * @return
+	 */
+	public TbSeckillGoods findOneFromRedis(Long id);
+	
 }

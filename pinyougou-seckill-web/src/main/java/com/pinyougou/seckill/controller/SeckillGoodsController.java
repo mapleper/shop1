@@ -19,7 +19,7 @@ import entity.Result;
 @RequestMapping("/seckillGoods")
 public class SeckillGoodsController {
 
-	@Reference
+	@Reference(timeout=10000)
 	private SeckillGoodsService seckillGoodsService;
 	
 	/**
@@ -117,6 +117,15 @@ public class SeckillGoodsController {
 	@RequestMapping("/findList")
 	public List<TbSeckillGoods> findList() {
 		return seckillGoodsService.findList();
+	}
+	/**
+	 * 从缓存中 根据ID查询出秒杀商品
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/findOneFromRedis")
+	public TbSeckillGoods findOneFromRedis(Long id){
+		return seckillGoodsService.findOneFromRedis(id);
 	}
 	
 }

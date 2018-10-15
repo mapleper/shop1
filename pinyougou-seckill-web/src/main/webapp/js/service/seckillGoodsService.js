@@ -3,4 +3,8 @@ app.service('seckillGoodsService',function($http){
 	this.findList=function(){
 		return $http.get('seckillGoods/findList.do');
 	}
+	//根据ID  从缓存中读取秒杀商品
+	this.findOne=function(id){
+		return $http.get('seckillGoods/findOneFromRedis.do?id='+id);
+	}
 });
